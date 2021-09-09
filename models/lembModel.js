@@ -4,10 +4,10 @@ var pool = require("./connection");
 module.exports.getAllLembretes = async function () {
     try {
         const sql = "SELECT id, titulo, dataHora, descricao, botao FROM  Lembretes";
-
         const lembretes = await pool.query(sql);
         console.log(sql);
         return lembretes;
+
     } catch (err) {
         console.log(err);
         return err;
@@ -16,8 +16,9 @@ module.exports.getAllLembretes = async function () {
 
 module.exports.saveLembrete = async function (titulo, dataHora, descricao, cor) {
     try {
-        const sqlLembs = "INSERT INTO Lembretes (titulo, dataHora, descricao, botao) VALUES ('" + titulo + "','" + dataHora + "','" + descricao + "','" + cor + "') ";
-        const lembretes = await pool.query(sqlLembs);
+        const sql = "INSERT INTO Lembretes (titulo, dataHora, descricao, botao) VALUES (?,?,?,?)";
+        const lembretes = await pool.query(sql, [titulo, dataHora, descricao, cor]);
+        console.log(sql);
         return lembretes;
 
     } catch (err) {
@@ -30,9 +31,9 @@ module.exports.getLembrete = async function (id) {
     try {
         const sql = "SELECT id, titulo, dataHora, descricao, botao FROM Lembretes WHERE id = ?";
         const lembrete = await pool.query(sql, [id]);
-
         console.log(sql);
         return lembrete;
+
     } catch (err) {
         console.log(err);
         return err;
@@ -41,26 +42,24 @@ module.exports.getLembrete = async function (id) {
 
 module.exports.deleteLembrete = async function (id) {
     try {
-        console.log("Delete with id " + id);
-        const sql = "DELETE FROM Lembretes WHERE id = " + id + "";
-        const lembrete = await pool.query(sql);
-
+        const sql = "DELETE FROM Lembretes WHERE id = ?";
+        const lembrete = await pool.query(sql, [id]);
         console.log(sql);
         return lembrete;
+
     } catch (err) {
         console.log(err);
         return err;
     }
 }
 
-module.exports.updateLembrete = async function (id, titulo, dataHora, descricao, cor) {
+module.exports.updateLembrete = async function (titulo, dataHora, descricao, cor, id) {
     try {
-        console.log("Delete with id " + id);
-        const sql = "UPDATE Lembretes SET titulo = '" + titulo + "', dataHora = '" + dataHora + "', descricao = '" + descricao + "', botao = '" + cor + "' WHERE id = " + id + "";
-        const lembrete = await pool.query(sql);
-
+        const sql = "UPDATE Lembretes SET titulo = ?, dataHora = ?, descricao = ?, botao = ? WHERE id = ?";
+        const lembrete = await pool.query(sql, [titulo, dataHora, descricao, cor, id]);
         console.log(sql);
         return lembrete;
+
     } catch (err) {
         console.log(err);
         return err;
